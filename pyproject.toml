@@ -1,0 +1,28 @@
+[project]
+name = "stringflow"
+version = "0.0.3"
+authors = [{ name = "Cody", email = "cody@dkdc.dev" }]
+description = "flow strings through language models"
+readme = "readme.md"
+requires-python = ">=3.12"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  'python-dotenv',
+  'rich',
+  'httpx',
+  'pydantic',
+  'blobfile',
+  'tiktoken',
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "ipython", "jupyter", "nbclient", "ipykernel"]
+test = ["pytest"]
+
+[project.urls]
+"Homepage" = "https://github.com/dkdc-io/stringflow"
+"Bug Tracker" = "https://github.com/dkdc-io/stringflow/issues"
