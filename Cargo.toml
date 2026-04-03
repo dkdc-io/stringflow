@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = ["crates/stringflow-core"]
+exclude = ["crates/stringflow-py"]
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
