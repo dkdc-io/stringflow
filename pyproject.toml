@@ -2,7 +2,7 @@
 name = "stringflow"
 version = "0.1.0"
 description = "Flow strings through language models."
-authors = [{ name = "Cody", email = "cody@dkdc.dev" }]
+authors = [{ name = "Cody", email = "cody@dkdc.io" }]
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]

@@ -4,7 +4,7 @@
 name = "stringflow-py"
 version = "0.1.0"
 edition = "2024"
-authors = ["Cody <cody@dkdc.dev>"]
+authors = ["Cody <cody@dkdc.io>"]
 license = "MIT"
 
 [lib]

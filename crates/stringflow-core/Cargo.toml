@@ -2,7 +2,7 @@
 name = "stringflow"
 version = "0.1.0"
 edition = "2024"
-authors = ["Cody <cody@dkdc.dev>"]
+authors = ["Cody <cody@dkdc.io>"]
 description = "Flow strings through language models."
 repository = "https://github.com/dkdc-io/stringflow"
 license = "MIT"
