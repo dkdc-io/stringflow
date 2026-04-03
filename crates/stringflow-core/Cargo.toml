@@ -6,7 +6,7 @@ authors = ["Cody <cody@dkdc.io>"]
 description = "Flow strings through language models."
 repository = "https://github.com/dkdc-io/stringflow"
 license = "MIT"
-readme = "README.md"
+readme = "../../README.md"
 
 [lib]
 name = "stringflow"

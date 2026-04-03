@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+echo "Publishing stringflow to crates.io..."
+cargo publish -p stringflow
+
+echo "Published!"
