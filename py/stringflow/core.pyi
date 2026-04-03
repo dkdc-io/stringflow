@@ -8,9 +8,9 @@ def chat(
     auth_header: str | None = None,
     auth_value: str | None = None,
 ) -> str:
-    """Send a chat request. Returns the response text."""
+    """Low-level: send a chat request. Returns the response text."""
     ...
 
 def health_check(base_url: str) -> str:
-    """Send a health check. Returns the status string."""
+    """Low-level: send a health check. Returns the status string."""
     ...
