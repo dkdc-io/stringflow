@@ -3,7 +3,7 @@
 //! These tests require llama-server to be running on localhost:8080.
 //! Run with: `cargo test -p stringflow -- --ignored`
 
-use futures::StreamExt;
+use futures_util::StreamExt;
 use stringflow::{
     AuthConfig, ChatMessage, ProviderConfig, StreamEvent, WireFormat, chat_async, chat_stream,
     health_check,
