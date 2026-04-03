@@ -28,7 +28,7 @@ const DEFAULT_MODEL: &str = "gemma-4-26b-a4b-it";
 /// Default max tokens for response generation
 const DEFAULT_MAX_TOKENS: u32 = 4096;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(thiserror::Error, Debug, Clone)]
 pub enum Error {
     #[error("service unavailable: {0}")]
     Unavailable(String),
@@ -41,7 +41,7 @@ pub enum Error {
 }
 
 /// Wire format for LLM API requests
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub enum WireFormat {
     /// OpenAI Chat Completions (`/v1/chat/completions`)
     Completions,
@@ -53,14 +53,14 @@ pub enum WireFormat {
 }
 
 /// A chat message (role + content), shared across all wire formats
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String,
     pub content: String,
 }
 
 /// A streaming event from a chat response
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum StreamEvent {
     /// A text delta (partial content)
     Delta(String),

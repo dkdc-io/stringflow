@@ -4,7 +4,7 @@
 
 use std::pin::Pin;
 
-use futures::Stream;
+use futures_core::Stream;
 use serde::Deserialize;
 
 use crate::providers::AuthConfig;
@@ -176,7 +176,7 @@ pub async fn chat_stream(
     let url = wire_formats::endpoint(&config.base_url, config.wire_format);
     let mut body = wire_formats::build_request(messages, config);
     body.as_object_mut()
-        .expect("request body is object")
+        .ok_or_else(|| Error::RequestFailed("request body is not a JSON object".to_string()))?
         .insert("stream".into(), true.into());
 
     let client = reqwest::Client::builder()
@@ -196,12 +196,10 @@ pub async fn chat_stream(
     let format = config.wire_format;
     let byte_stream = resp.bytes_stream();
 
-    use futures::StreamExt;
-    let event_stream = futures::stream::unfold(
+    use futures_util::StreamExt;
+    let event_stream = futures_util::stream::unfold(
         (byte_stream, String::new()),
         move |(mut byte_stream, mut buffer)| async move {
-            use futures::StreamExt;
-
             type Items = Vec<Result<StreamEvent, Error>>;
 
             loop {
@@ -213,7 +211,7 @@ pub async fn chat_stream(
                         if !events.is_empty() {
                             let is_done = events.iter().any(|e| matches!(e, StreamEvent::Done));
                             let items: Items = events.into_iter().map(Ok).collect();
-                            let stream = futures::stream::iter(items);
+                            let stream = futures_util::stream::iter(items);
                             if is_done {
                                 return Some((stream, (byte_stream, String::new())));
                             }
@@ -222,7 +220,7 @@ pub async fn chat_stream(
                     }
                     Some(Err(e)) => {
                         let items: Items = vec![Err(Error::RequestFailed(e.to_string()))];
-                        let stream = futures::stream::iter(items);
+                        let stream = futures_util::stream::iter(items);
                         return Some((stream, (byte_stream, String::new())));
                     }
                     None => {
@@ -230,7 +228,7 @@ pub async fn chat_stream(
                             let (events, _) = parse_sse_buffer(&buffer, format);
                             if !events.is_empty() {
                                 let items: Items = events.into_iter().map(Ok).collect();
-                                let stream = futures::stream::iter(items);
+                                let stream = futures_util::stream::iter(items);
                                 return Some((stream, (byte_stream, String::new())));
                             }
                         }
@@ -250,7 +248,7 @@ pub async fn chat_stream(
 // ============================================================================
 
 /// Health check response from /health
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct HealthResponse {
     pub status: String,
 }

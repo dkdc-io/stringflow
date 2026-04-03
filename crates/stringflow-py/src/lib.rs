@@ -1,8 +1,12 @@
-use pyo3::exceptions::PyRuntimeError;
+use pyo3::exceptions::{PyConnectionError, PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 
 fn to_py_err(e: stringflow::Error) -> PyErr {
-    PyErr::new::<PyRuntimeError, _>(e.to_string())
+    match &e {
+        stringflow::Error::Unavailable(_) => PyErr::new::<PyConnectionError, _>(e.to_string()),
+        stringflow::Error::RequestFailed(_) => PyErr::new::<PyRuntimeError, _>(e.to_string()),
+        stringflow::Error::EmptyResponse => PyErr::new::<PyRuntimeError, _>(e.to_string()),
+    }
 }
 
 // -- Chat ---------------------------------------------------------------------
@@ -47,9 +51,8 @@ fn parse_wire_format(s: &str) -> PyResult<stringflow::WireFormat> {
         "completions" => Ok(stringflow::WireFormat::Completions),
         "responses" => Ok(stringflow::WireFormat::Responses),
         "messages" => Ok(stringflow::WireFormat::Messages),
-        _ => Err(PyErr::new::<PyRuntimeError, _>(format!(
-            "unknown wire format '{}', expected: completions, responses, messages",
-            s
+        _ => Err(PyErr::new::<PyValueError, _>(format!(
+            "unknown wire format '{s}', expected: 'completions', 'responses', or 'messages'"
         ))),
     }
 }
