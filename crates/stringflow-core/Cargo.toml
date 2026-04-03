@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 authors = ["Cody <cody@dkdc.dev>"]
 description = "Flow strings through language models."
-repository = "https://github.com/lostmygithubaccount/stringflow"
+repository = "https://github.com/dkdc-io/stringflow"
 license = "MIT"
 readme = "README.md"
 
