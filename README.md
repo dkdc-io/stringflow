@@ -1,4 +1,9 @@
-# stringflow
+# Stringflow
+
+[![crates.io](https://img.shields.io/crates/v/stringflow?color=blue)](https://crates.io/crates/stringflow)
+[![PyPI](https://img.shields.io/pypi/v/stringflow?color=blue)](https://pypi.org/project/stringflow/)
+[![CI](https://img.shields.io/github/actions/workflow/status/dkdc-io/stringflow/ci.yml?branch=main&label=CI)](https://github.com/dkdc-io/stringflow/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-8A2BE2.svg)](https://github.com/dkdc-io/stringflow/blob/main/LICENSE)
 
 Flow strings through language models.
 
