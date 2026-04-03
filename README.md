@@ -1,4 +1,4 @@
-# Stringflow
+# StringFlow
 
 [![crates.io](https://img.shields.io/crates/v/stringflow?color=blue)](https://crates.io/crates/stringflow)
 [![PyPI](https://img.shields.io/pypi/v/stringflow?color=blue)](https://pypi.org/project/stringflow/)
