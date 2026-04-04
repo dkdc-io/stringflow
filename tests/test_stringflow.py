@@ -1,7 +1,7 @@
 """Tests for the stringflow Python API.
 
 E2E tests require a running llama-server on localhost:8080.
-Run with: uv run pytest py/stringflow/test_api.py
+Run with: uv run pytest tests/test_stringflow.py
 """
 
 import pytest
