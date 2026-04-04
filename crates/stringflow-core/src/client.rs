@@ -91,7 +91,7 @@ pub async fn chat_async(
     messages: &[crate::ChatMessage],
 ) -> Result<String, Error> {
     let url = wire_formats::endpoint(&config.base_url, config.wire_format);
-    let body = wire_formats::build_request(messages, config);
+    let body = wire_formats::build_request(messages, config)?;
 
     let client = reqwest::Client::builder()
         .timeout(REQUEST_TIMEOUT)
@@ -132,7 +132,7 @@ pub async fn chat_async(
 /// Send a blocking chat request. Retries on 503 with exponential backoff.
 pub fn chat(config: &ProviderConfig, messages: &[crate::ChatMessage]) -> Result<String, Error> {
     let url = wire_formats::endpoint(&config.base_url, config.wire_format);
-    let body = wire_formats::build_request(messages, config);
+    let body = wire_formats::build_request(messages, config)?;
 
     let client = reqwest::blocking::Client::builder()
         .timeout(REQUEST_TIMEOUT)
@@ -174,7 +174,7 @@ pub async fn chat_stream(
     messages: &[crate::ChatMessage],
 ) -> Result<Pin<Box<dyn Stream<Item = Result<StreamEvent, Error>> + Send>>, Error> {
     let url = wire_formats::endpoint(&config.base_url, config.wire_format);
-    let mut body = wire_formats::build_request(messages, config);
+    let mut body = wire_formats::build_request(messages, config)?;
     body.as_object_mut()
         .ok_or_else(|| Error::RequestFailed("request body is not a JSON object".to_string()))?
         .insert("stream".into(), true.into());
