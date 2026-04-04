@@ -51,3 +51,5 @@ response = stringflow.chat(
     messages=[("user", "Hello!")],
 )
 ```
+
+> **Note:** Streaming (`chat_stream()`) and async (`chat_async()`) APIs are currently Rust-only. Python provides synchronous `chat()` and `health_check()` only.
