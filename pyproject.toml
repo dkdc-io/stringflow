@@ -1,6 +1,6 @@
 [project]
 name = "stringflow"
-version = "0.1.0"
+version = "0.2.0"
 description = "Flow strings through language models."
 authors = [{ name = "Cody", email = "cody@dkdc.io" }]
 requires-python = ">=3.11"
