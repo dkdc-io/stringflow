@@ -21,7 +21,10 @@ pub(crate) fn endpoint(base_url: &str, format: WireFormat) -> String {
     format!("{}{}", base_url, path)
 }
 
-pub(crate) fn build_request(messages: &[ChatMessage], config: &ProviderConfig) -> Value {
+pub(crate) fn build_request(
+    messages: &[ChatMessage],
+    config: &ProviderConfig,
+) -> Result<Value, Error> {
     match config.wire_format {
         WireFormat::Completions => completions::build_request(messages, config),
         WireFormat::Responses => responses::build_request(messages, config),
@@ -77,17 +80,17 @@ mod tests {
 
         let mut config = test_config();
         config.wire_format = WireFormat::Completions;
-        let completions = build_request(&msgs, &config);
+        let completions = build_request(&msgs, &config).unwrap();
         assert!(completions.get("messages").is_some());
         assert!(completions.get("model").is_none());
 
         config.wire_format = WireFormat::Responses;
-        let responses = build_request(&msgs, &config);
+        let responses = build_request(&msgs, &config).unwrap();
         assert!(responses.get("input").is_some());
         assert!(responses.get("model").is_some());
 
         config.wire_format = WireFormat::Messages;
-        let messages = build_request(&msgs, &config);
+        let messages = build_request(&msgs, &config).unwrap();
         assert!(messages.get("messages").is_some());
         assert!(messages.get("max_tokens").is_some());
     }

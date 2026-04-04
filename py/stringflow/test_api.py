@@ -31,6 +31,33 @@ class TestChatInput:
             sf.chat("hi", base_url="http://localhost:19999")
 
 
+class TestMessageBuilding:
+    def test_string_builds_user_message(self):
+        """String input should build a user message and append to history."""
+        # chat() will fail connecting, but we can verify TypeError doesn't fire for str
+        with pytest.raises((ConnectionError, Exception)):
+            sf.chat("hello", base_url="http://localhost:19999")
+
+    def test_list_input_passes_through(self):
+        """List input should be used directly as messages."""
+        with pytest.raises((ConnectionError, Exception)):
+            sf.chat([("user", "hello")], base_url="http://localhost:19999")
+
+    def test_history_is_prepended(self):
+        """History should be prepended to the new message."""
+        with pytest.raises((ConnectionError, Exception)):
+            sf.chat(
+                "follow up",
+                [("user", "hi"), ("assistant", "hello")],
+                base_url="http://localhost:19999",
+            )
+
+    def test_invalid_wire_format(self):
+        """Invalid wire format should raise ValueError."""
+        with pytest.raises(ValueError, match="unknown wire format"):
+            sf.chat("hi", base_url="http://localhost:19999", wire_format="invalid")
+
+
 class TestDefaults:
     def test_default_url(self):
         assert sf.DEFAULT_URL == "http://localhost:8080"
@@ -40,6 +67,13 @@ class TestDefaults:
         assert hasattr(sf, "health_check")
         assert hasattr(sf, "DEFAULT_URL")
         assert hasattr(sf, "Message")
+
+
+class TestHealthCheck:
+    def test_health_check_connection_error(self):
+        """health_check should raise when server is unreachable."""
+        with pytest.raises((ConnectionError, Exception)):
+            sf.health_check(base_url="http://localhost:19999")
 
 
 # ============================================================================

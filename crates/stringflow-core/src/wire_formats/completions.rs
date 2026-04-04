@@ -33,11 +33,14 @@ struct CompletionsResponse {
 // Build / parse
 // ============================================================================
 
-pub(crate) fn build_request(messages: &[ChatMessage], _config: &ProviderConfig) -> Value {
+pub(crate) fn build_request(
+    messages: &[ChatMessage],
+    _config: &ProviderConfig,
+) -> Result<Value, Error> {
     serde_json::to_value(CompletionsRequest {
         messages: messages.to_vec(),
     })
-    .expect("serialize completions request")
+    .map_err(|e| Error::RequestFailed(e.to_string()))
 }
 
 pub(crate) fn parse_response(bytes: &[u8]) -> Result<String, Error> {
@@ -74,7 +77,7 @@ mod tests {
     fn request_shape() {
         let msgs = crate::test_messages();
         let config = test_config();
-        let val = build_request(&msgs, &config);
+        let val = build_request(&msgs, &config).unwrap();
         let arr = val["messages"].as_array().unwrap();
         assert_eq!(arr.len(), 3);
         assert_eq!(arr[0]["role"], "user");

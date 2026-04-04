@@ -35,7 +35,10 @@ struct MessagesResponse {
 // Build / parse
 // ============================================================================
 
-pub(crate) fn build_request(messages: &[ChatMessage], config: &ProviderConfig) -> Value {
+pub(crate) fn build_request(
+    messages: &[ChatMessage],
+    config: &ProviderConfig,
+) -> Result<Value, Error> {
     serde_json::to_value(MessagesRequest {
         model: config
             .model
@@ -44,7 +47,7 @@ pub(crate) fn build_request(messages: &[ChatMessage], config: &ProviderConfig) -
         messages: messages.to_vec(),
         max_tokens: config.max_tokens.unwrap_or(DEFAULT_MAX_TOKENS),
     })
-    .expect("serialize messages request")
+    .map_err(|e| Error::RequestFailed(e.to_string()))
 }
 
 pub(crate) fn parse_response(bytes: &[u8]) -> Result<String, Error> {
@@ -91,7 +94,7 @@ mod tests {
     fn request_shape() {
         let msgs = crate::test_messages();
         let config = test_config();
-        let val = build_request(&msgs, &config);
+        let val = build_request(&msgs, &config).unwrap();
         let arr = val["messages"].as_array().unwrap();
         assert_eq!(arr.len(), 3);
         assert!(val["model"].as_str().is_some());
@@ -105,7 +108,7 @@ mod tests {
         let mut config = test_config();
         config.model = Some("claude-opus".to_string());
         config.max_tokens = Some(8192);
-        let val = build_request(&msgs, &config);
+        let val = build_request(&msgs, &config).unwrap();
         assert_eq!(val["model"], "claude-opus");
         assert_eq!(val["max_tokens"], 8192);
     }

@@ -39,7 +39,10 @@ struct ResponsesResponse {
 // Build / parse
 // ============================================================================
 
-pub(crate) fn build_request(messages: &[ChatMessage], config: &ProviderConfig) -> Value {
+pub(crate) fn build_request(
+    messages: &[ChatMessage],
+    config: &ProviderConfig,
+) -> Result<Value, Error> {
     serde_json::to_value(ResponsesRequest {
         model: config
             .model
@@ -48,7 +51,7 @@ pub(crate) fn build_request(messages: &[ChatMessage], config: &ProviderConfig) -
         input: messages.to_vec(),
         max_output_tokens: config.max_tokens.unwrap_or(DEFAULT_MAX_TOKENS),
     })
-    .expect("serialize responses request")
+    .map_err(|e| Error::RequestFailed(e.to_string()))
 }
 
 pub(crate) fn parse_response(bytes: &[u8]) -> Result<String, Error> {
@@ -90,7 +93,7 @@ mod tests {
     fn request_shape() {
         let msgs = crate::test_messages();
         let config = test_config();
-        let val = build_request(&msgs, &config);
+        let val = build_request(&msgs, &config).unwrap();
         let arr = val["input"].as_array().unwrap();
         assert_eq!(arr.len(), 3);
         assert_eq!(arr[0]["role"], "user");
@@ -105,7 +108,7 @@ mod tests {
         let mut config = test_config();
         config.model = Some("custom-model".to_string());
         config.max_tokens = Some(2048);
-        let val = build_request(&msgs, &config);
+        let val = build_request(&msgs, &config).unwrap();
         assert_eq!(val["model"], "custom-model");
         assert_eq!(val["max_output_tokens"], 2048);
     }
