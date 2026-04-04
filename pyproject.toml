@@ -24,6 +24,10 @@ python-packages = ["stringflow"]
 python-source = "py"
 manifest-path = "crates/stringflow-py/Cargo.toml"
 
+[tool.pytest.ini_options]
+markers = ["e2e: end-to-end tests requiring a running llama-server"]
+addopts = "-m 'not e2e'"
+
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"

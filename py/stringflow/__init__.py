@@ -16,6 +16,9 @@ def chat(
     wire_format: str = "messages",
     model: str | None = None,
     max_tokens: int | None = None,
+    auth_bearer: str | None = None,
+    auth_header: str | None = None,
+    auth_value: str | None = None,
 ) -> list[Message]:
     """Chat with an LLM. Returns conversation history you can pass back in.
 
@@ -35,7 +38,16 @@ def chat(
         )
 
     try:
-        response = _chat_raw(base_url, messages, wire_format, model, max_tokens)
+        response = _chat_raw(
+            base_url,
+            messages,
+            wire_format,
+            model,
+            max_tokens,
+            auth_bearer,
+            auth_header,
+            auth_value,
+        )
     except ConnectionError as e:
         raise ConnectionError(
             f"cannot reach LLM server at {base_url} — is dkdc-ai running?\n"
