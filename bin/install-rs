@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+echo "Building stringflow Rust crate..."
+cargo build --release
+
+echo "Rust install complete!"
