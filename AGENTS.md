@@ -29,10 +29,18 @@ crates/stringflow-core/       # Core library (stringflow on crates.io)
   src/wire_formats/messages.rs     # Anthropic Messages
 crates/stringflow-py/         # PyO3 bindings (cdylib)
 py/stringflow/                # Python wrapper + type stubs
-tests/e2e.rs                  # E2E tests (require running llama-server)
+crates/stringflow-core/tests/e2e.rs  # E2E tests (require running llama-server)
 ```
 
 Library only — no binaries. Supports async + blocking + streaming.
+
+## E2E tests
+
+E2E tests require a running `llama-server` on `localhost:8080`. Run with:
+
+```bash
+cargo test -p stringflow -- --ignored
+```
 
 ## Wire formats
 
