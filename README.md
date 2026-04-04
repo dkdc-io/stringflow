@@ -1,5 +1,6 @@
 # StringFlow
 
+[![GitHub Release](https://img.shields.io/github/v/release/dkdc-io/stringflow?color=blue)](https://github.com/dkdc-io/stringflow/releases)
 [![crates.io](https://img.shields.io/crates/v/stringflow?color=blue)](https://crates.io/crates/stringflow)
 [![PyPI](https://img.shields.io/pypi/v/stringflow?color=blue)](https://pypi.org/project/stringflow/)
 [![CI](https://img.shields.io/github/actions/workflow/status/dkdc-io/stringflow/ci.yml?branch=main&label=CI)](https://github.com/dkdc-io/stringflow/actions/workflows/ci.yml)
