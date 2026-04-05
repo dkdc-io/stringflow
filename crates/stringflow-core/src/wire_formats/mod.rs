@@ -82,7 +82,7 @@ mod tests {
         config.wire_format = WireFormat::Completions;
         let completions = build_request(&msgs, &config).unwrap();
         assert!(completions.get("messages").is_some());
-        assert!(completions.get("model").is_none());
+        assert!(completions.get("model").is_some());
 
         config.wire_format = WireFormat::Responses;
         let responses = build_request(&msgs, &config).unwrap();
