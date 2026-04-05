@@ -42,6 +42,9 @@ fn apply_auth_blocking(
 fn parse_sse_buffer(buffer: &str, format: WireFormat) -> (Vec<StreamEvent>, String) {
     let mut events = Vec::new();
 
+    // Normalize \r\n line endings to \n per SSE spec
+    let buffer = buffer.replace("\r\n", "\n");
+
     // Split on double-newline (SSE event boundaries)
     let mut parts = buffer.split("\n\n").peekable();
 
@@ -352,6 +355,25 @@ mod tests {
         let (events, remaining) = parse_sse_buffer(buffer, WireFormat::Completions);
         assert_eq!(events.len(), 1);
         assert_eq!(remaining, "data: partial");
+    }
+
+    #[test]
+    fn parse_sse_buffer_crlf_line_endings() {
+        let buffer = "data: {\"choices\":[{\"delta\":{\"content\":\"hi\"}}]}\r\n\r\n";
+        let (events, remaining) = parse_sse_buffer(buffer, WireFormat::Completions);
+        assert_eq!(events.len(), 1);
+        assert!(matches!(&events[0], StreamEvent::Delta(s) if s == "hi"));
+        assert!(remaining.is_empty());
+    }
+
+    #[test]
+    fn parse_sse_buffer_crlf_multiple_events() {
+        let buffer = "data: {\"choices\":[{\"delta\":{\"content\":\"a\"}}]}\r\n\r\ndata: {\"choices\":[{\"delta\":{\"content\":\"b\"}}]}\r\n\r\ndata: [DONE]\r\n\r\n";
+        let (events, _) = parse_sse_buffer(buffer, WireFormat::Completions);
+        assert_eq!(events.len(), 3);
+        assert!(matches!(&events[0], StreamEvent::Delta(s) if s == "a"));
+        assert!(matches!(&events[1], StreamEvent::Delta(s) if s == "b"));
+        assert!(matches!(&events[2], StreamEvent::Done));
     }
 
     #[test]
