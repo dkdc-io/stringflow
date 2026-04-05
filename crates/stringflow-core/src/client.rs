@@ -41,21 +41,18 @@ fn apply_auth_blocking(
 /// Parse SSE data lines from a buffer. Returns (events, remaining_buffer).
 fn parse_sse_buffer(buffer: &str, format: WireFormat) -> (Vec<StreamEvent>, String) {
     let mut events = Vec::new();
-    let mut remaining = String::new();
 
     // Split on double-newline (SSE event boundaries)
-    let parts: Vec<&str> = buffer.split("\n\n").collect();
-    let last_idx = parts.len().saturating_sub(1);
+    let mut parts = buffer.split("\n\n").peekable();
 
-    for (i, chunk) in parts.iter().enumerate() {
+    while let Some(chunk) = parts.next() {
         if chunk.is_empty() {
             continue;
         }
 
         // Last chunk is incomplete if buffer didn't end with \n\n
-        if i == last_idx && !buffer.ends_with("\n\n") {
-            remaining = chunk.to_string();
-            break;
+        if parts.peek().is_none() && !buffer.ends_with("\n\n") {
+            return (events, chunk.to_owned());
         }
 
         for line in chunk.lines() {
@@ -71,7 +68,7 @@ fn parse_sse_buffer(buffer: &str, format: WireFormat) -> (Vec<StreamEvent>, Stri
         }
     }
 
-    (events, remaining)
+    (events, String::new())
 }
 
 // ============================================================================
