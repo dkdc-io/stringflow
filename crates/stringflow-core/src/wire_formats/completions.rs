@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{ChatMessage, Error, ProviderConfig, StreamEvent};
+use crate::{ChatMessage, DEFAULT_MODEL, Error, ProviderConfig, StreamEvent};
 
 // ============================================================================
 // Types
@@ -11,6 +11,7 @@ use crate::{ChatMessage, Error, ProviderConfig, StreamEvent};
 
 #[derive(Debug, Serialize)]
 struct CompletionsRequest {
+    model: String,
     messages: Vec<ChatMessage>,
 }
 
@@ -35,9 +36,13 @@ struct CompletionsResponse {
 
 pub(crate) fn build_request(
     messages: &[ChatMessage],
-    _config: &ProviderConfig,
+    config: &ProviderConfig,
 ) -> Result<Value, Error> {
     serde_json::to_value(CompletionsRequest {
+        model: config
+            .model
+            .clone()
+            .unwrap_or_else(|| DEFAULT_MODEL.to_string()),
         messages: messages.to_vec(),
     })
     .map_err(|e| Error::RequestFailed(e.to_string()))
@@ -83,7 +88,7 @@ mod tests {
         assert_eq!(arr[0]["role"], "user");
         assert_eq!(arr[0]["content"], "Hello");
         assert_eq!(arr[2]["role"], "user");
-        assert!(val.get("model").is_none());
+        assert!(val["model"].as_str().is_some());
     }
 
     #[test]
