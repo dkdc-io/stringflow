@@ -3,9 +3,15 @@ use pyo3::prelude::*;
 
 fn to_py_err(e: stringflow::Error) -> PyErr {
     match &e {
-        stringflow::Error::Unavailable(_) => PyErr::new::<PyConnectionError, _>(e.to_string()),
-        stringflow::Error::RequestFailed(_) => PyErr::new::<PyRuntimeError, _>(e.to_string()),
-        stringflow::Error::EmptyResponse => PyErr::new::<PyRuntimeError, _>(e.to_string()),
+        stringflow::Error::Unavailable(_) => {
+            PyErr::new::<PyConnectionError, _>(format!("[connection] {e}"))
+        }
+        stringflow::Error::RequestFailed(_) => {
+            PyErr::new::<PyRuntimeError, _>(format!("[request] {e}"))
+        }
+        stringflow::Error::EmptyResponse => {
+            PyErr::new::<PyRuntimeError, _>(format!("[empty_response] {e}"))
+        }
     }
 }
 
