@@ -14,7 +14,6 @@ fn to_py_err(e: stringflow::Error) -> PyErr {
 #[pyfunction]
 #[pyo3(signature = (base_url, messages, wire_format="messages", model=None, max_tokens=None, auth_bearer=None, auth_header=None, auth_value=None))]
 fn chat(
-    py: Python<'_>,
     base_url: &str,
     messages: Vec<(String, String)>,
     wire_format: &str,
@@ -34,7 +33,7 @@ fn chat(
         auth_value,
     )?;
     let msgs = to_chat_messages(messages);
-    py.allow_threads(|| stringflow::chat(&config, &msgs).map_err(to_py_err))
+    stringflow::chat(&config, &msgs).map_err(to_py_err)
 }
 
 // -- Health check -------------------------------------------------------------
